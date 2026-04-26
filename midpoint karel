@@ -1,0 +1,94 @@
+from karel.stanfordkarel import *
+
+'''
+to whoever is reading this, including future me,
+this is the hardest problem I have ever come across.
+finding the midpoint is not as easy as it seems without the help of variables
+karel also does not have memory or a finite beeper bag
+which leaves me with no other option but to use the beepers as a wall or a live tracker
+using the beepers i tried a tug of war or closing the gap approach
+it got me very close but not quite there
+
+I'll now try a similar but different approach
+ps: update it worked
+'''
+
+def main():
+    fill() #fills the row with beepers
+    elimination() #pull out the beepers from sides till center one is left
+
+def fill():
+    while front_is_clear():
+        put_beeper()
+        move()
+    put_beeper() #fencepost bug
+    
+    
+def elimination():
+    #option 1: normal in 1st row beeper removal
+    #option 2: uses the 2nd street, flip and front blocked, and beeper present
+    # I'm using option 2 here
+    move_up_left()
+    move_up_right()
+
+
+def move_up_left(): #goes up a row from the left
+    while not_facing_north(): # \
+        turn_left()           #  |= moves karel up a row
+    move()                    # /
+    turn_right()
+    bull()
+    turn_right()
+    move() #here karel has reached the 1st street again
+    turn_right()
+    cleanup_beepers()
+    if no_beepers_present():
+        move_up_right()
+    
+def move_up_right(): #goes up a row from the right
+    while not_facing_north():
+        turn_left()
+    move()
+    turn_left()
+    bull()
+    turn_left()
+    move()
+    turn_left()
+    cleanup_beepers()
+    if no_beepers_present():
+        move_up_left()
+
+def cleanup_beepers(): #a small algorithm i designed which basically picks up beepers based on whether or not there is a beeper ahead of it
+    while no_beepers_present():
+        if front_is_clear():
+            move()
+    if beepers_present():
+        if front_is_clear():
+            move()
+            if beepers_present():
+                flip()
+                move()
+                pick_beeper()
+            else:
+                end()
+
+def end():
+    flip()
+    move()
+    while not_facing_east():
+        turn_left()
+
+def turn_right():
+    for i in range(3):
+        turn_left()
+
+def bull():
+    while front_is_clear():
+        move()
+
+def flip():
+    turn_left()
+    turn_left()    
+
+if __name__ == '__main__':
+    main()
