@@ -1,0 +1,76 @@
+from karel.stanfordkarel import *
+
+"""
+I can probably just fill in skipping beepers
+
+move to wall with alternate space beeper placement
+and making one function should be fine as there is always a gap of maximum between any two consecutive beeprs regardless of the direction or orientation
+
+need to implement if front blocked to ensure i dont break the boundaries of the world
+
+also, for a different approach karel can try:
+layout 1 where it places starting from the 1st column
+layout 2 where it places starting form the 2nd column
+
+karel can movetowall with layout 1,
+    when it encounters a wall it can just skip up two rows and continue layout 1
+when the top is blocked and it cannot go up, it should come down a row and put layout 2
+    till i reaches the bottom and it cant go down any further it should just move to the bottomleft corner and face east which is the easy part
+
+"""
+
+
+def main():
+    put_beeper() #to put the first beeper since idw overlap by doing this in the fill row
+    while left_is_clear(): #here left checks for the top so that this doesnt ruin a 1x1 world
+        fill_row() #pretty simple, puts beepers in alternate spacing
+        move_up() #very simple, moves up a row
+    fill_row() #fencepost bug at the top row
+    end_position() #returns karel to required position
+
+def fill_row(): 
+    while front_is_clear(): #while loop bcz idk how many times
+        if front_is_clear(): #if loop because idw karel to get hurt by banging his head
+            move()
+            if front_is_clear():
+                move()
+                put_beeper()
+
+def move_up():
+    flip() #teddy west-side
+    bull() #charges to wall
+    if beepers_present(): #to alternate patterns in rows
+        turn_right()
+        move() #to skip the first column 
+        turn_right()
+        if front_is_clear():
+            move()
+            put_beeper()
+    else: #basically checks for odd or even rows
+        turn_right()
+        move()
+        turn_right()
+        put_beeper()
+
+def end_position(): #just to satisfy the puzzles requirements
+    flip()
+    bull()
+    turn_left()
+    bull()
+    turn_left()
+
+def bull():
+    while front_is_clear():
+        move()
+
+def turn_right():
+    for i in range(3):
+        turn_left()
+
+def flip():
+    turn_left()
+    turn_left()
+
+# There is no need to edit code beyond this point
+if __name__ == '__main__':
+    main()
